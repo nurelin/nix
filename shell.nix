@@ -1,13 +1,17 @@
 { useClang ? false }:
 
-with import (builtins.fetchGit { url = https://github.com/NixOS/nixpkgs-channels.git; ref = "nixos-18.09"; }) {};
+with import (builtins.fetchGit { url = https://github.com/NixOS/nixpkgs-channels.git; ref = "nixos-unstable"; }) {};
 
 with import ./release-common.nix { inherit pkgs; };
 
 (if useClang then clangStdenv else stdenv).mkDerivation {
   name = "nix";
 
+  nativeBuildInputs = with pkgs; nativeBuildDeps ++ [ ninja meson bison flex autoreconfHook ];
+
   buildInputs = buildDeps ++ tarballDeps ++ perlDeps;
+
+  strictDeps = true;
 
   inherit configureFlags;
 

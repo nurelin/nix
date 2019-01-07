@@ -47,15 +47,23 @@ rec {
       autoreconfHook
     ];
 
+  nativeBuildDeps = [
+    pkgconfig
+
+    # Tests
+    git
+    #mercurial
+  ];
+
   buildDeps =
     [ curl
       bzip2 xz brotli editline
-      openssl pkgconfig sqlite boehmgc
+      openssl sqlite boehmgc
       boost
 
       # Tests
       git
-      mercurial
+      #mercurial
     ]
     ++ lib.optionals stdenv.isLinux [libseccomp utillinuxMinimal]
     ++ lib.optional (stdenv.isLinux || stdenv.isDarwin) libsodium
