@@ -139,6 +139,7 @@ nix_bin = executable(
     include_directories : src_inc,
     sources : nix_src,
     link_with : nix_link_list,
+    link_args: [ '-static' ],
     dependencies : nix_dep_list)
 
 

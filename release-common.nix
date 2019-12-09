@@ -36,7 +36,8 @@ rec {
   });
 
   mesonFlags = [
-    (mesonFeature "with_gc" true)
+    (mesonFlag "default_library" "static")
+    (mesonFeature "with_gc" false)
     (mesonFeature "with_libsodium" stdenv.hostPlatform.isLinux)
     (mesonFeature "with_editline" (!stdenv.hostPlatform.isWindows))
   ];
@@ -66,18 +67,21 @@ rec {
   ];
 
   buildDeps = with pkgs; [
-    bzip2
-    xz
+    (bzip2.override { linkStatic = true; })
+    (xz.override { enableStatic = true; })
     brotli
     (if stdenv.hostPlatform.isWindows then openssl_1_0_2 else openssl)
     sqlite
-    boehmgc
+    #boehmgc
     boost
     curl
+    #(curl_static.override { nghttp2 = nghttp2_static; })
+    nghttp2_static
+    zlib.static
 
     # Tests
-    git
-    mercurial
+    #git
+    #mercurial
   ] ++ lib.optionals (!stdenv.hostPlatform.isWindows) [
     editline
   ] ++ lib.optionals stdenv.isLinux [libseccomp utillinuxMinimal]

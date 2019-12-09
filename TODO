@@ -1,0 +1,1 @@
+NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nix-shell  --arg crossSystem "(import ../nixpkgs/lib).systems.examples.mingwW64"  --show-trace

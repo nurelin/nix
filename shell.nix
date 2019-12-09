@@ -2,9 +2,13 @@
 
 let
   pkgsSrc = builtins.fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-19.09.tar.gz;
+  overlays = [
+    (self: super: { nghttp2_static = super.nghttp2.overrideAttrs (old: { configureFlags = old.configureFlags ++ [ "--enable-static" "--disable-shared" ]; }); })
+    (self: super: { curl_static = super.curl.overrideAttrs (old: { configureFlags = old.configureFlags ++ [ "--enable-static" "--disable-shared" ]; }); })
+  ];
 in
 
-with import pkgsSrc { inherit crossSystem; };
+with import pkgsSrc { inherit crossSystem; crossOverlays = overlays; };
 
 with import ./release-common.nix { inherit pkgs; };
 
