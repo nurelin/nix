@@ -2,13 +2,23 @@
 
 let
   pkgsSrc = builtins.fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-19.09.tar.gz;
+  cross_overlays = [
+    (self: super: { nghttp2_static = super.nghttp2.overrideAttrs (old: { configureFlags = old.configureFlags ++ [ "--enable-static" "--disable-shared" "CFLAGS=-DNGHTTP2_STATICLIB"]; }); })
+    (self: super: { curl_static = super.curl.overrideAttrs (old: { configureFlags = old.configureFlags ++ [ "--enable-static" "--disable-shared" "CFLAGS=-DNGHTTP2_STATICLIB"]; }); })
+  ];
   overlays = [
-    (self: super: { nghttp2_static = super.nghttp2.overrideAttrs (old: { configureFlags = old.configureFlags ++ [ "--enable-static" "--disable-shared" ]; }); })
-    (self: super: { curl_static = super.curl.overrideAttrs (old: { configureFlags = old.configureFlags ++ [ "--enable-static" "--disable-shared" ]; }); })
+    #(self: super: {
+    #  windows = (super.windows or {}) // {
+    #    mcfgthreads = super.windows.mcfgthreads.overrideAttrs
+    #    (old: {
+    #      configureFlags = (old.configureFlags or []) ++ [ "--enable-static" "--disable-shared"];
+    #    });
+    #  };
+    #})
   ];
 in
 
-with import pkgsSrc { inherit crossSystem; crossOverlays = overlays; };
+with import pkgsSrc { inherit crossSystem; crossOverlays = cross_overlays; inherit overlays; };
 
 with import ./release-common.nix { inherit pkgs; };
 

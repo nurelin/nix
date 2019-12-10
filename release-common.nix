@@ -74,8 +74,7 @@ rec {
     sqlite
     #boehmgc
     boost
-    curl
-    #(curl_static.override { nghttp2 = nghttp2_static; })
+    (curl_static.override { nghttp2 = nghttp2_static; })
     nghttp2_static
     zlib.static
 

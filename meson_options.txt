@@ -57,7 +57,8 @@ option(
     value : [
         '-L/usr/local/lib',
         '-lbrotlienc-static',
-        '-lbrotlidec-static'],
+        '-lbrotlidec-static',
+        '-lbrotlicommon-static'],
     description : 'link args for libbrotli')
 
 option(
